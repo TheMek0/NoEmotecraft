@@ -12,6 +12,7 @@ Official project (only download the mod from here):
 
 ## Development
 ---
+_WARN: building from repo is not available because it uses player-anim-core that was build on my pc_<br>
 how to build
 ```bash
 git clone https://github.com/KosmX/emotes.git
