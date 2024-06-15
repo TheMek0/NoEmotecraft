@@ -48,7 +48,7 @@ public abstract class AbstractServerEmotePlay<P> extends ServerEmoteAPI {
             initMappings(EmoteInstance.instance.getConfigPath());
             ServerEmoteAPI.INSTANCE = this;
         }catch (IOException e){
-            e.printStackTrace();
+            EmoteInstance.instance.getLogger().log(Level.WARNING, "Failed to init emote mappings", e);
         }
     }
 
@@ -59,7 +59,7 @@ public abstract class AbstractServerEmotePlay<P> extends ServerEmoteAPI {
             try {
                 this.bedrockEmoteMap = new EmoteMappings(Serializer.serializer.fromJson(reader, new TypeToken<BiMap<UUID, UUID>>() {}.getType()));
             }catch (JsonParseException e){
-                e.printStackTrace();
+                EmoteInstance.instance.getLogger().log(Level.WARNING, "Failed to load emote map", e);
             }
             reader.close();
         }
@@ -204,8 +204,8 @@ public abstract class AbstractServerEmotePlay<P> extends ServerEmoteAPI {
             packet.read(data);
             packet.setRuntimeEntityID(getRuntimePlayerID(player));
             receiveBEEmote(player, packet);
-        }catch (Throwable t){
-            t.printStackTrace();
+        } catch (Throwable t){
+            EmoteInstance.instance.getLogger().log(Level.WARNING, "Failed to receive bedrock emote", t);
         }
     }
 

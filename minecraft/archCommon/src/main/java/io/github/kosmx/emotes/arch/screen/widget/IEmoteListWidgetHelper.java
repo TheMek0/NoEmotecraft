@@ -47,7 +47,7 @@ public interface IEmoteListWidgetHelper extends IWidgetLogic {
             }
             matrices.drawString(Minecraft.getInstance().font, this.getEmote().name, (int) ((float) (x + 38)), (int) ((float) (y + 1)), 16777215);
             matrices.drawString(Minecraft.getInstance().font, this.getEmote().description, (int) ((float) (x + 38)), (int) ((float) (y + 12)), 8421504);
-            if(! this.getEmote().author.getString().equals("")) {
+            if(!this.getEmote().author.getString().isEmpty()) {
                 Component text = Component.translatable("emotecraft.emote.author").withStyle(ChatFormatting.GOLD).append(this.getEmote().author);
                 matrices.drawString(Minecraft.getInstance().font, text, (int) ((float) (x + 38)), (int) ((float) (y + 23)), 8421504);
             }

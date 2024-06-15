@@ -18,7 +18,8 @@ public class ServerPlayTrackerMixin {
 
     @Inject(method = "addPairing", at = @At(value = "TAIL"))
     private void startTrackingCallback(ServerPlayer serverPlayer, CallbackInfo ci) {
-        if (this.entity instanceof Player) AbstractServerEmotePlay.getInstance().playerStartTracking(this.entity, serverPlayer); //Do not do this in your code
+        if (this.entity instanceof Player) //noinspection unchecked
+            AbstractServerEmotePlay.getInstance().playerStartTracking(this.entity, serverPlayer); //Do not do this in your code
     }
 
 }

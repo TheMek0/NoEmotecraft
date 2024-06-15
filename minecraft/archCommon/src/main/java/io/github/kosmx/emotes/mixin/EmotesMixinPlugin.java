@@ -22,10 +22,7 @@ public class EmotesMixinPlugin implements IMixinConfigPlugin {
     @SuppressWarnings("ConstantConditions")
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (mixinClassName.equals("io.github.kosmx.emotes.arch.mixin.EmotePlayerMixin") && !PlatformTools.isPlayerAnimLoaded()) {
-            return false;
-        }
-        return true;
+        return !mixinClassName.equals("io.github.kosmx.emotes.arch.mixin.EmotePlayerMixin") || PlatformTools.isPlayerAnimLoaded();
     }
 
     @Override

@@ -42,7 +42,7 @@ public interface INetworkInstance {
      * {@link INetworkInstance#setVersions(HashMap)}
      * Used to send server-side config/emotes
      */
-    default void presenceResponse(){}
+    void presenceResponse();
 
     /**
      * Do send the sender's id to the server

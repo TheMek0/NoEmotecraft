@@ -6,7 +6,7 @@ import io.github.kosmx.emotes.forge.network.ClientNetworkInstance;
 public class PlatformToolsImpl {
     public static boolean isPlayerAnimLoaded() {
         try {
-            Class.forName("dev.kosmx.playerAnim.api.layered.IAnimation").getName();
+            Class.forName("dev.kosmx.playerAnim.api.layered.IAnimation");
             return true;
         } catch(ClassNotFoundException e) {
             return false;

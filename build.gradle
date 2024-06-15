@@ -1,6 +1,6 @@
 plugins{
     id 'java'
-    id 'dev.architectury.loom' version '1.4.+' apply false //Forge loom :D
+    id 'dev.architectury.loom' version '1.6.+' apply false //Forge loom :D
     id "architectury-plugin" version "3.4-SNAPSHOT" apply true
     id "com.github.johnrengelman.shadow" version "8.1.1" apply false
     //id "com.dorongold.task-tree" version "1.5" Current version doesn't support gradle 6.8
@@ -27,6 +27,7 @@ allprojects {
         maven {
             url "https://libraries.minecraft.net"
         }
+        mavenLocal()
     }
 
     tasks.withType(JavaCompile).configureEach {
@@ -49,7 +50,7 @@ allprojects {
     }
 
     compileJava.options.encoding = 'UTF-8'
-    tasks.withType(JavaCompile) {
+    tasks.withType(JavaCompile).configureEach {
         options.encoding = 'UTF-8'
     }
 
@@ -114,7 +115,7 @@ if(keysExists) {
     }
 
 
-    task autoPublish {
+    tasks.register('autoPublish') {
         //dependsOn(':forge:build',)
         //dependsOn(':fabric:build', ':bukkit:build')
         dependsOn('collectArtifacts')
@@ -141,20 +142,20 @@ else {
 }
 
 //Build all modules task :D
-task buildAll{
+tasks.register('buildAll') {
     dependsOn(':bukkit:build')
     dependsOn(':bungee:build')
     dependsOn(':velocity:build')
     dependsOn(':minecraft:buildAll')
 }
 
-task cleanupArtifacts{
+tasks.register('cleanupArtifacts') {
     doLast {
         delete "${project.projectDir}/artifacts"
     }
 }
 
-task collectArtifacts{
+tasks.register('collectArtifacts') {
     dependsOn('cleanupArtifacts')
     dependsOn(':bukkit:copyArtifacts')
     dependsOn(':bungee:copyArtifacts')
@@ -165,7 +166,7 @@ task collectArtifacts{
     }
 }
 
-clean{
+clean {
     delete "${project.projectDir}/artifacts"
 }
 

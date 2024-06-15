@@ -7,6 +7,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -23,8 +24,8 @@ public abstract class AbstractEmoteListWidget<E extends AbstractEmoteListWidget.
     protected List<E> emotes = new ArrayList<>();
     private final Screen screen;
 
-    public AbstractEmoteListWidget(Minecraft minecraftClient, int i, int j, int k, int l, int m, Screen screen){
-        super(minecraftClient, i, j, k, l, m);
+    public AbstractEmoteListWidget(Minecraft minecraftClient, int y, int width, int height, int itemHeight, Screen screen){
+        super(minecraftClient, width, height, y, itemHeight);
         this.centerListVertically = false;
         this.screen = screen;
     }
@@ -39,7 +40,7 @@ public abstract class AbstractEmoteListWidget<E extends AbstractEmoteListWidget.
 
     @Override
     public void emotesSetLeftPos(int left) {
-        this.setLeftPos(left);
+        this.setX(left);
     }
 
     @Override
@@ -74,7 +75,7 @@ public abstract class AbstractEmoteListWidget<E extends AbstractEmoteListWidget.
 
     @Override
     protected int getScrollbarPosition(){
-        return this.x1 - 6;
+        return this.getX() - 6;
     }
 
     @Override
@@ -93,7 +94,7 @@ public abstract class AbstractEmoteListWidget<E extends AbstractEmoteListWidget.
 
 
         @Override
-        public void render(GuiGraphics matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta){
+        public void render(@NotNull GuiGraphics matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta){
             this.renderThis(matrices, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta);
         }
 
@@ -114,7 +115,7 @@ public abstract class AbstractEmoteListWidget<E extends AbstractEmoteListWidget.
         }
 
         @Override
-        public Component getNarration() {
+        public @NotNull Component getNarration() {
             return this.emote.name;
         }
 

@@ -41,13 +41,13 @@ public class MainClientInit {
     public static void playDebugEmote(){
         EmoteInstance.instance.getLogger().log(Level.INFO, "Playing debug emote");
         Path location = null;
-        for(AnimationFormat source:AnimationFormat.values()){
+        for (AnimationFormat source : AnimationFormat.values()){
             location = EmoteInstance.instance.getGameDirectory().resolve("emote." + source.getExtension());
             if(location.toFile().isFile()){
                 break;
             }
         }
-        if(location == null)return;
+        if(location == null) return;
         try{
             InputStream reader = Files.newInputStream(location);
             EmoteHolder emoteHolder = new EmoteHolder(UniversalEmoteSerializer.readData(reader, location.getFileName().toString()).get(0));

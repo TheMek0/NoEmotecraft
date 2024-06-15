@@ -6,6 +6,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import io.github.kosmx.emotes.common.CommonData;
 import io.github.kosmx.emotes.common.SerializableConfig;
+import io.github.kosmx.emotes.executor.EmoteInstance;
 
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
@@ -13,8 +14,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import java.util.logging.Level;
 
-public class EmoteFixer{
+public class EmoteFixer {
     private final int currentVersion;
 
     @Nullable
@@ -65,12 +67,13 @@ public class EmoteFixer{
         if(data == null){
             try{
                 InputStream stream = EmoteFixer.class.getResourceAsStream("/assets/" + CommonData.MOD_ID + "/emote_upgrade_data.json");
+                if (stream == null) throw new NullPointerException("emote_upgrade_data.json resource not found");
                 InputStreamReader streamReader = new InputStreamReader(stream, StandardCharsets.UTF_8);
                 BufferedReader reader = new BufferedReader(streamReader);
                 //data = ClientSerializer.serializer.fromJson(reader, new TypeToken<HashMap<Integer, HashMap<Integer, Integer>>>(){}.getType());
-                data = new JsonParser().parse(reader);
+                data = JsonParser.parseReader(reader);
             }catch (JsonParseException | NullPointerException e){
-                e.printStackTrace();
+                EmoteInstance.instance.getLogger().log(Level.WARNING, "Failed to read emote upgrade data", e);
             }
         }
         return data.getAsJsonObject();

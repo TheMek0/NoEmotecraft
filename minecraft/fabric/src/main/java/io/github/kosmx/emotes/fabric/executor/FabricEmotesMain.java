@@ -7,11 +7,22 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.nio.file.Path;
+import java.util.logging.Level;
 
 public class FabricEmotesMain extends EmoteInstance {
     @Override
     public Logger getLogger() {
-        return FabricWrapper::log;
+        return new Logger() {
+            @Override
+            public void writeLog(Level level, String msg) {
+                FabricWrapper.log(level, msg);
+            }
+
+            @Override
+            public void log(Level level, String msg, Throwable exc) {
+                FabricWrapper.log(level, msg, exc);
+            }
+        };
     }
 
 

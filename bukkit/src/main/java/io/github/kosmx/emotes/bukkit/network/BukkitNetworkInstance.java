@@ -49,8 +49,8 @@ public class BukkitNetworkInstance extends AbstractNetworkInstance implements IS
 
     @Override
     public void presenceResponse() {
-        IServerNetworkInstance.super.presenceResponse();
-        for (Player player :bukkitPlugin.getServer().getOnlinePlayers()) {
+        IServerNetworkInstance.presenceResponse(this);
+        for (Player player : bukkitPlugin.getServer().getOnlinePlayers()) {
             if (this.player.canSee(player)) {
                 ServerSideEmotePlay.getInstance().playerStartTracking(player, this.player);
             }

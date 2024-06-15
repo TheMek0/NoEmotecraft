@@ -97,14 +97,17 @@ public class EmoteMenu extends EmoteConfigScreen {
         int x7 = this.getWidth() / 2 - 154;
         int y1 = this.getHeight() - 30;
         Component msg4 = Component.translatable("emotecraft.openFolder");
-        this.addRenderableWidget(Button.builder(msg4, ((Consumer<Button>) (buttonWidget) -> PlatformTools.openExternalEmotesDir())::accept).pos(x7, y1).size(150, 20).build());
+        var openBtn = this.addRenderableWidget(Button.builder(msg4, ((Consumer<Button>) (buttonWidget) -> PlatformTools.openExternalEmotesDir())::accept).pos(x7, y1).size(150, 20).build());
 
         //this.emoteList = new EmoteListWidget(this.client, (int) (this.getHeight() / 2.2 - 16), this.getHeight(), this);
-        this.emoteList = newEmoteList((int) (getWidth()/2.2-16), this.getHeight());
+        this.emoteList = newEmoteList((int) (getWidth()/2.2-16), this.getHeight()-searchBox.getY()-searchBox.getHeight());
+        var downSpacing = getHeight() - openBtn.getY();
+        var lsH = getHeight() - emoteList.getY() - downSpacing - 10;
+        emoteList.setHeight(lsH);
         this.emoteList.emotesSetLeftPos( getWidth() / 2 - (int) ( getWidth() / 2.2 - 16) - 12);
         this.addToChildren(this.emoteList);
         int x = Math.min( getWidth() / 4, (int) ( getHeight() / 2.5));
-        this.fastMenu = newFastChooseWidghet( getWidth() / 2 + 2, this.getHeight() / 2 - 8, x - 7);
+        this.fastMenu = newFastChooseWidget( getWidth() / 2 + 2, this.getHeight() / 2 - 8, x - 7);
         this.addToChildren(fastMenu);
         int x6 = this.getWidth() - 100;
         Component msg3 = Component.translatable("emotecraft.options.options");
@@ -131,7 +134,7 @@ public class EmoteMenu extends EmoteConfigScreen {
         this.texts.add(new PositionedText(Component.translatable("emotecraft.options.fastmenu3"), this.getWidth() / 2 + 10 + x / 2, this.getHeight() / 2 - 26));
     }
 
-    protected FastChooseWidget newFastChooseWidghet(int x, int y, int size) {
+    protected FastChooseWidget newFastChooseWidget(int x, int y, int size) {
         return new FastMenuImpl(x, y, size);
     }
 
@@ -207,12 +210,12 @@ public class EmoteMenu extends EmoteConfigScreen {
 
     @Override
     public void render(@NotNull GuiGraphics matrices, int mouseX, int mouseY, float delta){
-        this.renderDirtBackground(matrices);
-        if(this.emoteList.getSelectedEntry() == null){
+        super.render(matrices, mouseX, mouseY, delta);
+        if (this.emoteList.getSelectedEntry() == null) {
             this.setKeyButton.active = false;
             //this.resetKey.setActive(false);
             resetOnlySelected = false;
-        }else{
+        } else {
             this.setKeyButton.active = true;
             //this.resetKey.setActive(! this.emoteList.getSelectedEntry().getEmote().keyBinding.equals(TmpGetters.getDefaults().getUnknownKey()));
             resetOnlySelected = ((ClientConfig)EmoteInstance.config).emoteKeyMap.containsL(this.emoteList.getSelectedEntry().getEmote().getUuid());
@@ -220,8 +223,7 @@ public class EmoteMenu extends EmoteConfigScreen {
         if(resetOnlySelected){
             this.resetKey.active = true;
             this.resetKey.setMessage(resetOneText);
-        }
-        else {
+        } else {
             if(keyBoundEmotes < 0) countEmotesWithKeyBind();
             if(keyBoundEmotes > 0){
                 this.resetKey.active = true;
@@ -232,14 +234,13 @@ public class EmoteMenu extends EmoteConfigScreen {
                 this.resetKey.setMessage(resetOneText);
             }
         }
-        for(PositionedText str : texts){
+        for (PositionedText str : texts){
             str.render(matrices);
         }
         this.emoteList.renderThis(matrices, mouseX, mouseY, delta);
         this.searchBox.render(matrices, mouseX, mouseY, delta);
         this.fastMenu.render(matrices, mouseX, mouseY, delta);
         updateKeyText();
-        super.render(matrices, mouseX, mouseY, delta);
     }
 
     private boolean setKey(InputConstants.Key key){
@@ -382,7 +383,7 @@ public class EmoteMenu extends EmoteConfigScreen {
     }
 
     protected AbstractEmoteListWidget<?> newEmoteList(int width, int height) {
-        return new EmoteListImpl(getMinecraft(), width, height, 51, height-32, 36, this);
+        return new EmoteListImpl(getMinecraft(), 51, width, height, 36, this);
     }
 
     @Override
@@ -489,9 +490,8 @@ public class EmoteMenu extends EmoteConfigScreen {
 
     public static class EmoteListImpl extends AbstractEmoteListWidget<EmoteListImpl.EmoteListEntryImpl> {
 
-        public EmoteListImpl(Minecraft minecraftClient, int i, int j, int k, int l, int m, Screen screen) {
-            super(minecraftClient, i, j, k, l, m, screen);
-
+        public EmoteListImpl(Minecraft minecraftClient, int y, int width, int height, int itemHeight, Screen screen) {
+            super(minecraftClient, y, width, height, itemHeight, screen);
         }
 
         @Override

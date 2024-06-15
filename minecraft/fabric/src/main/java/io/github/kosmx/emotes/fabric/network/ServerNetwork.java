@@ -8,16 +8,9 @@ import io.github.kosmx.emotes.common.network.objects.NetData;
 import io.github.kosmx.emotes.fabric.FabricWrapper;
 import io.github.kosmx.emotes.server.network.AbstractServerEmotePlay;
 import io.github.kosmx.emotes.server.network.IServerNetworkInstance;
-import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.FriendlyByteBuf;
+import net.fabricmc.fabric.api.networking.v1.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.player.Player;
 
 import java.io.IOException;
@@ -32,36 +25,25 @@ public class ServerNetwork extends AbstractServerEmotePlay<Player> {
     public static ServerNetwork instance = new ServerNetwork();
 
     public void init(){
+        PayloadTypeRegistry.playC2S().register(GeyserEmoteCustomPayload.TYPE, GeyserEmoteCustomPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(GeyserEmoteCustomPayload.TYPE, GeyserEmoteCustomPayload.CODEC);
+
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            ServerPlayNetworking.registerReceiver(handler, channelID, this::receiveMessage);
-            ServerPlayNetworking.registerReceiver(handler, geyserChannelID, this::receiveGeyserMessage);
+            ServerPlayNetworking.registerReceiver(handler, EmoteCustomPayload.TYPE, this::receivePayload);
+            ServerPlayNetworking.registerReceiver(handler, GeyserEmoteCustomPayload.TYPE, this::receiveGeyserPayload);
         });
     }
 
-    void receiveMessage(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender){
-        try{
-            if(buf.isDirect()){
-                byte[] bytes = new byte[buf.readableBytes()];
-                buf.getBytes(buf.readerIndex(), bytes);
-                receiveMessage(bytes, player, (INetworkInstance) handler);
-            }
-            else {
-                receiveMessage(buf.array(), player, (INetworkInstance) handler);
-            }
-        }catch (IOException e){
-            e.printStackTrace();
+    void receivePayload(EmoteCustomPayload type, ServerPlayNetworking.Context ctx){
+        try {
+            receiveMessage(type.getData(), ctx.player(), (INetworkInstance) ctx.player().connection);
+        } catch (IOException e) {
+            FabricWrapper.logger.error("Failed to receive payload", e);
         }
     }
 
-    void receiveGeyserMessage(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender){
-        if(buf.isDirect()){
-            byte[] bytes = new byte[buf.readableBytes()];
-            buf.getBytes(buf.readerIndex(), bytes);
-            receiveGeyserMessage(player, bytes);
-        }
-        else {
-            receiveGeyserMessage(player, buf.array());
-        }
+    void receiveGeyserPayload(GeyserEmoteCustomPayload type, ServerPlayNetworking.Context ctx){
+        receiveGeyserMessage(ctx.player(), type.getData());
     }
 
     @Override
@@ -89,10 +71,10 @@ public class ServerNetwork extends AbstractServerEmotePlay<Player> {
         PlayerLookup.tracking(player).forEach(serverPlayer -> {
             try {
                 if (serverPlayer != player && ServerPlayNetworking.canSend(serverPlayer, geyserChannelID)){
-                    ServerPlayNetworking.send(serverPlayer, geyserChannelID, new FriendlyByteBuf(Unpooled.wrappedBuffer(packet.write())));
+                    ServerPlayNetworking.send(serverPlayer, new GeyserEmoteCustomPayload(packet.write()));
                 }
             }catch (IOException e){
-                e.printStackTrace();
+                FabricWrapper.logger.error("Failed to send geyser emote packet to {}", serverPlayer.getScoreboardName(), e);
             }
         });
     }
@@ -106,13 +88,13 @@ public class ServerNetwork extends AbstractServerEmotePlay<Player> {
                     if (ServerPlayNetworking.canSend(serverPlayerEntity, channelID)) {
                         EmotePacket.Builder packetBuilder = new EmotePacket.Builder(data);
                         packetBuilder.setVersion(((IServerNetworkInstance)serverPlayerEntity.connection).getRemoteVersions());
-                        ServerPlayNetworking.send(serverPlayerEntity, channelID, new FriendlyByteBuf(Unpooled.wrappedBuffer(packetBuilder.build().write().array())));
+                        ServerPlayNetworking.send(serverPlayerEntity, new EmoteCustomPayload(packetBuilder.build().write().array()));
+                    } else if (ServerPlayNetworking.canSend(serverPlayerEntity, geyserChannelID) && emotePacket != null) {
+                        ServerPlayNetworking.send(serverPlayerEntity, new GeyserEmoteCustomPayload(emotePacket.write()));
                     }
-                    else if (ServerPlayNetworking.canSend(serverPlayerEntity, geyserChannelID) && emotePacket != null)
-                        ServerPlayNetworking.send(serverPlayerEntity, geyserChannelID, new FriendlyByteBuf(Unpooled.wrappedBuffer(emotePacket.write())));
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                FabricWrapper.logger.error("Failed to send emote packet to {}", serverPlayerEntity.getScoreboardName(), e);
             }
         });
     }
@@ -132,9 +114,9 @@ public class ServerNetwork extends AbstractServerEmotePlay<Player> {
             try {
                 EmotePacket.Builder packetBuilder = new EmotePacket.Builder(data);
                 packetBuilder.setVersion(((IServerNetworkInstance)serverPlayerEntity.connection).getRemoteVersions());
-                ServerPlayNetworking.send(serverPlayerEntity, channelID, new FriendlyByteBuf(Unpooled.wrappedBuffer(packetBuilder.build().write().array())));
+                ServerPlayNetworking.send(serverPlayerEntity, new EmoteCustomPayload(packetBuilder.build().write().array()));
             } catch (IOException e) {
-                e.printStackTrace();
+                FabricWrapper.logger.error("Failed to send emote packet to {}", serverPlayerEntity.getScoreboardName(), e);
             }
         }
     }

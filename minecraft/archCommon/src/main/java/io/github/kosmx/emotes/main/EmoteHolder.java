@@ -169,8 +169,7 @@ public class EmoteHolder implements Supplier<UUID> {
         }
     }
 
-    EmoteHolder findIfPresent()
-    {
+    EmoteHolder findIfPresent() {
         if (list.contains(this)) {
             for (EmoteHolder obj : list) {
                 if (obj.equals(this))
@@ -185,7 +184,7 @@ public class EmoteHolder implements Supplier<UUID> {
         list.add(hold);
     }
 
-    public static boolean playEmote(KeyframeAnimation emote, IEmotePlayerEntity player){
+    public static boolean playEmote(KeyframeAnimation emote, IEmotePlayerEntity player) {
         return playEmote(emote, player, null);
     }
 
@@ -196,10 +195,10 @@ public class EmoteHolder implements Supplier<UUID> {
      * @param emoteHolder emote holder object
      * @return could be played
      */
-    public static boolean playEmote(KeyframeAnimation emote, IEmotePlayerEntity player, @Nullable EmoteHolder emoteHolder){
-        if(canPlayEmote(player)){
+    public static boolean playEmote(KeyframeAnimation emote, IEmotePlayerEntity player, @Nullable EmoteHolder emoteHolder) {
+        if (canPlayEmote(player)) {
             return ClientEmotePlay.clientStartLocalEmote(emote);
-        }else{
+        } else{
             return false;
         }
     }

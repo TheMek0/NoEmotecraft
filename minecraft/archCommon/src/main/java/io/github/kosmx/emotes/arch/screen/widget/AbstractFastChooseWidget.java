@@ -57,8 +57,8 @@ public abstract class AbstractFastChooseWidget implements IWidgetLogic {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        return this.wheel.mouseScrolled(mouseX, mouseY, amount);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        return this.wheel.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     public boolean isMouseOver(double mouseX, double mouseY) {

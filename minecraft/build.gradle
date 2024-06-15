@@ -20,20 +20,20 @@ architectury{
 
 apply plugin: 'com.matthewprenger.cursegradle'
 
-task buildAll{
+tasks.register('buildAll') {
     dependsOn(":${project.module_name}:fabric:build")
     dependsOn(":${project.module_name}:forge:build")
 }
 
-task copyArtifacts{
+tasks.register('copyArtifacts') {
     dependsOn("buildAll")
     doLast {
-        copy{
+        copy {
             from "${project.projectDir}/fabric/build/libs/${project.archives_base_name}-for-MC${project.minecraft_version}-${project.mod_version}-fabric.jar"
             into "${rootProject.projectDir}/artifacts"
         }
 
-        copy{
+        copy {
             from "${project.projectDir}/forge/build/libs/${project.archives_base_name}-for-MC${project.minecraft_version}-${project.mod_version}-forge.jar"
             into "${rootProject.projectDir}/artifacts"
         }//*/
@@ -41,7 +41,7 @@ task copyArtifacts{
 }
 
 if(keysExists) {
-    task publishMod {
+    tasks.register('publishMod') {
         finalizedBy(":${project.module_name}:fabric:modrinth")
         finalizedBy(":${project.module_name}:forge:modrinth")
         finalizedBy(":${project.module_name}:publishToCF")
@@ -107,7 +107,7 @@ if(keysExists) {
 
     }
 
-    task publishToCF{
+    tasks.register("publishToCF") {
         dependsOn('buildAll')
         finalizedBy(tasks.curseforge)
     }

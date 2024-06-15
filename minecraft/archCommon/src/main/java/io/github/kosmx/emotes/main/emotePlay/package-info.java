@@ -1,5 +1,4 @@
-package io.github.kosmx.emotes.main.emotePlay;
-
-/*
-Everything emote play related
+/**
+ * Everything emote play related
  */
+package io.github.kosmx.emotes.main.emotePlay;

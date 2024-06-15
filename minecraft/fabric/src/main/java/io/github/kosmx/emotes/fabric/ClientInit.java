@@ -12,7 +12,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -45,15 +45,15 @@ public class ClientInit {
 
     private static void initKeyBinding(){
         openMenuKey = new KeyMapping("key.emotecraft.fastchoose", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, "category.emotecraft.keybinding");
-        KeyBindingRegistryImpl.registerKeyBinding(openMenuKey);
+        KeyBindingHelper.registerKeyBinding(openMenuKey);
 
         stopEmote = new KeyMapping("key.emotecraft.stop", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "category.emotecraft.keybinding");
-        KeyBindingRegistryImpl.registerKeyBinding(stopEmote);
+        KeyBindingHelper.registerKeyBinding(stopEmote);
 
         if(FabricLoader.getInstance().getGameDir().resolve("emote.json").toFile().isFile()){ //Secret feature//
             debugKey = new KeyMapping("key.emotecraft.debug", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O,       //I don't know why... just
                     "category.emotecraft.keybinding");
-            KeyBindingRegistryImpl.registerKeyBinding(debugKey);
+            KeyBindingHelper.registerKeyBinding(debugKey);
         }
         keyBindingFunction = client -> {
 

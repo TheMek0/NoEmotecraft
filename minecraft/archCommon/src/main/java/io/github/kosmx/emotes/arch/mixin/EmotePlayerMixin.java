@@ -39,10 +39,10 @@ public abstract class EmotePlayerMixin extends Player implements IPlayerEntity {
     @Shadow @Final public ClientLevel clientLevel;
 
     @Unique
-    private AnimationContainer<EmotePlayer> emotecraftEmoteContainer = new AnimationContainer<>(null);
+    private AnimationContainer<EmotePlayer> emotecraft$emotecraftEmoteContainer = new AnimationContainer<>(null);
 
     @Unique
-    private boolean isForced = false;
+    private boolean emotecraft$isForced = false;
 
     public EmotePlayerMixin(Level level, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(level, blockPos, f, gameProfile);
@@ -51,23 +51,23 @@ public abstract class EmotePlayerMixin extends Player implements IPlayerEntity {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void init(ClientLevel clientLevel, GameProfile gameProfile, CallbackInfo ci) {
-        ((IPlayer)this).getAnimationStack().addAnimLayer(1000, emotecraftEmoteContainer);
+        ((IPlayer)this).getAnimationStack().addAnimLayer(1000, emotecraft$emotecraftEmoteContainer);
     }
 
     @Override
     public void emotecraft$playEmote(KeyframeAnimation emote, int t, boolean isForced) {
-        this.emotecraftEmoteContainer.setAnim(new EmotePlayImpl(emote, this::emotecraft$noteConsumer, t));
-        this.initEmotePerspective(emotecraftEmoteContainer.getAnim());
-        if (this.isMainPlayer()) this.isForced = isForced;
+        this.emotecraft$emotecraftEmoteContainer.setAnim(new EmotePlayImpl(emote, this::emotecraft$noteConsumer, t));
+        this.initEmotePerspective(emotecraft$emotecraftEmoteContainer.getAnim());
+        if (this.isMainPlayer()) this.emotecraft$isForced = isForced;
     }
 
     @Unique
     private void emotecraft$noteConsumer(Layer.Note note){
-        this.clientLevel.playLocalSound(this.getX(), this.getY(), this.getZ(), getInstrumentFromCode(note.instrument).getSoundEvent().value(), SoundSource.PLAYERS, note.getVolume(), note.getPitch(), true);
+        this.clientLevel.playLocalSound(this.getX(), this.getY(), this.getZ(), emotecraft$getInstrumentFromCode(note.instrument).getSoundEvent().value(), SoundSource.PLAYERS, note.getVolume(), note.getPitch(), true);
     }
 
     @Unique
-    private static NoteBlockInstrument getInstrumentFromCode(byte b){
+    private static NoteBlockInstrument emotecraft$getInstrumentFromCode(byte b){
 
         //That is more efficient than a switch case...
         NoteBlockInstrument[] instruments = {NoteBlockInstrument.HARP, NoteBlockInstrument.BASS, NoteBlockInstrument.BASEDRUM, NoteBlockInstrument.SNARE, NoteBlockInstrument.HAT,
@@ -92,14 +92,14 @@ public abstract class EmotePlayerMixin extends Player implements IPlayerEntity {
 
     @Override
     public void emotecraft$voidEmote() {
-        this.emotecraftEmoteContainer.setAnim(null);
+        this.emotecraft$emotecraftEmoteContainer.setAnim(null);
     }
 
 
     @Nullable
     @Override
     public EmotePlayer emotecraft$getEmote() {
-        return this.emotecraftEmoteContainer.getAnim();
+        return this.emotecraft$emotecraftEmoteContainer.getAnim();
     }
 
     @Override
@@ -145,6 +145,6 @@ public abstract class EmotePlayerMixin extends Player implements IPlayerEntity {
 
     @Override
     public boolean emotecraft$isForcedEmote() {
-        return this.isPlayingEmote() && this.isForced;
+        return this.isPlayingEmote() && this.emotecraft$isForced;
     }
 }

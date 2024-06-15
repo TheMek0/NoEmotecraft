@@ -18,6 +18,9 @@ import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.EventNetworkChannel;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
@@ -34,19 +37,9 @@ public class ServerNetwork extends AbstractServerEmotePlay<Player> {
 
     public static final ResourceLocation geyserChannelID = new ResourceLocation("geyser", "emote");
 
-    public static final EventNetworkChannel channel = NetworkRegistry.newEventChannel(
-            channelID,
-            () -> "8",
-            s -> true,
-            s -> true
-    );
+    public static final EventNetworkChannel channel = ChannelBuilder.named(channelID).eventNetworkChannel();
 
-    public static final EventNetworkChannel geyserChannel = NetworkRegistry.newEventChannel(
-            geyserChannelID,
-            () -> "0",
-            s -> true,
-            s -> true
-    );
+    public static final EventNetworkChannel geyserChannel = ChannelBuilder.named(geyserChannelID).eventNetworkChannel();
 
     public static ServerNetwork instance = new ServerNetwork();
 
@@ -55,9 +48,9 @@ public class ServerNetwork extends AbstractServerEmotePlay<Player> {
         geyserChannel.addListener(this::receiveGeyserEvent); //Lambdas are not possible.
     }
 
-    public void receiveByteBuf(NetworkEvent.ClientCustomPayloadEvent event){
-        instance.receiveMessage(event.getSource().get().getSender(), event.getSource().get().getSender().connection, event.getPayload());
-        event.getSource().get().setPacketHandled(true);//it was handled just in a bit weirder way me :D
+    public void receiveByteBuf(CustomPayloadEvent event){
+        instance.receiveMessage(event.getSource().getSender(), event.getSource().getSender().connection, event.getPayload());
+        event.getSource().setPacketHandled(true);//it was handled just in a bit weirder way me :D
     }
 
     public void receiveGeyserEvent(NetworkEvent.ClientCustomPayloadEvent networkEvent){

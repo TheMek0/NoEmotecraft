@@ -38,15 +38,15 @@ public class ServerSideEmotePlay extends AbstractServerEmotePlay<Player> impleme
         //EmoteInstance.instance.getLogger().log(Level.FINE, "[EMOTECRAFT] streaming emote");
         if (channel.equals(BukkitWrapper.EmotePacket)) {
             BukkitNetworkInstance playerNetwork = player_database.getOrDefault(player.getUniqueId(), null);
-            if (playerNetwork != null) {
-                //Let the common server logic process the message
-                try {
-                    this.receiveMessage(message, player, playerNetwork);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
+            if (playerNetwork == null) {
                 EmoteInstance.instance.getLogger().log(Level.WARNING, "Player: " + player.getName() + " is not registered");
+                return;
+            }
+            //Let the common server logic process the message
+            try {
+                this.receiveMessage(message, player, playerNetwork);
+            } catch (Exception e) {
+                EmoteInstance.instance.getLogger().log(Level.WARNING, "Failed to receive plugin message", e);
             }
         }
         else {
@@ -91,8 +91,8 @@ public class ServerSideEmotePlay extends AbstractServerEmotePlay<Player> impleme
             if (player1 != player && player1.canSee(player)) {
                 try {
                     player1.sendPluginMessage(plugin, BukkitWrapper.GeyserPacket, packet.write());
-                }catch (Exception e){
-                    e.printStackTrace();
+                } catch (Exception e){
+                    EmoteInstance.instance.getLogger().log(Level.WARNING, "Failed to send plugin message", e);
                 }
             }
         }
@@ -112,7 +112,7 @@ public class ServerSideEmotePlay extends AbstractServerEmotePlay<Player> impleme
                     }
                     else if(emotePacket != null) player1.sendPluginMessage(plugin, BukkitWrapper.GeyserPacket, emotePacket.write());
                 }catch (Exception e){
-                    e.printStackTrace();
+                    EmoteInstance.instance.getLogger().log(Level.WARNING, "Failed to send plugin message", e);
                 }
             }
         }
@@ -130,12 +130,16 @@ public class ServerSideEmotePlay extends AbstractServerEmotePlay<Player> impleme
     @Override
     protected void sendForPlayer(NetData data, Player player, UUID target) {
         Player targetPlayer = plugin.getServer().getPlayer(target);
+        if (targetPlayer == null) {
+            EmoteInstance.instance.getLogger().log(Level.WARNING, "Unknown target player "+target);
+            return;
+        }
         try {
             EmotePacket.Builder packetBuilder = new EmotePacket.Builder(data.copy());
             packetBuilder.setVersion(getPlayerNetworkInstance(targetPlayer).getRemoteVersions());
             targetPlayer.sendPluginMessage(plugin, BukkitWrapper.EmotePacket, packetBuilder.build().write().array());
-        }catch (Exception e){
-            e.printStackTrace();
+        } catch (Exception e){
+            EmoteInstance.instance.getLogger().log(Level.WARNING, "Failed to send plugin message to "+player.getName(), e);
         }
     }
 

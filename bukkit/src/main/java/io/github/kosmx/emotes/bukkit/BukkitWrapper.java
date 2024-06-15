@@ -6,6 +6,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.utility.MinecraftVersion;
 import io.github.kosmx.emotes.bukkit.executor.BukkitInstance;
 import io.github.kosmx.emotes.bukkit.network.ServerSideEmotePlay;
 import io.github.kosmx.emotes.common.CommonData;
@@ -25,15 +26,15 @@ public class BukkitWrapper extends JavaPlugin {
     ServerSideEmotePlay networkPlay = null;
 
     private ProtocolManager protocolManager;
+    private PacketType type;
 
 
     @Override
     public void onLoad() {
-        if(CommonData.isLoaded){
+        if (CommonData.isLoaded){
             getLogger().warning("Emotecraft is loaded multiple times, please load it only once!");
             Bukkit.getPluginManager().disablePlugin(this); //disable itself.
-        }
-        else {
+        } else {
             CommonData.isLoaded = true;
         }
         EmoteInstance.instance = new BukkitInstance(this);
@@ -41,6 +42,7 @@ public class BukkitWrapper extends JavaPlugin {
         EmoteInstance.config = Serializer.getConfig();
         UniversalEmoteSerializer.loadEmotes();
         protocolManager = ProtocolLibrary.getProtocolManager();
+        type = getPacketType();
         registerProtocolListener();
     }
 
@@ -48,26 +50,35 @@ public class BukkitWrapper extends JavaPlugin {
     public void onEnable() {
         this.networkPlay = new ServerSideEmotePlay(this);
         getServer().getPluginManager().registerEvents(networkPlay,this);
-        super.onEnable();
         getLogger().info("Loading Emotecraft as a bukkit plugin...");
     }
 
     @Override
     public void onDisable() {
-        super.onDisable();
         Bukkit.getMessenger().unregisterIncomingPluginChannel(this, EmotePacket);
+        Bukkit.getMessenger().unregisterOutgoingPluginChannel(this, EmotePacket);
+        Bukkit.getMessenger().unregisterIncomingPluginChannel(this, GeyserPacket);
+        Bukkit.getMessenger().unregisterOutgoingPluginChannel(this, GeyserPacket);
+    }
+
+    private PacketType getPacketType(){
+        var ver1_20_2 = new MinecraftVersion(1, 20, 2);
+        if (ver1_20_2.atOrAbove()){
+            return PacketType.Play.Server.SPAWN_ENTITY;
+        } else {
+            return PacketType.Play.Server.NAMED_ENTITY_SPAWN;
+        }
     }
 
     public void registerProtocolListener() {
-        protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.NAMED_ENTITY_SPAWN) {
+        protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, type) {
             @Override
             public void onPacketSending(PacketEvent packetEvent) {
-                if (packetEvent.getPacketType().equals(PacketType.Play.Server.NAMED_ENTITY_SPAWN)) {
+                if (packetEvent.getPacketType().equals(type)) {
                     //Field trackedField = packetEvent.getPacket().getStructures().getField(2);
                     UUID tracked = packetEvent.getPacket().getUUIDs().readSafely(0);
 
                     AbstractServerEmotePlay.getInstance().playerStartTracking(BukkitWrapper.this.networkPlay.getPlayerFromUUID(tracked), packetEvent.getPlayer());
-
                 }
             }
 

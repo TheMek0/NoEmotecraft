@@ -10,6 +10,7 @@ import io.github.kosmx.emotes.executor.EmoteInstance;
 import io.github.kosmx.emotes.executor.emotePlayer.IEmotePlayerEntity;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +44,7 @@ public final class PlatformTools {
             return Component.literal("");
         }
         try {
-            return Component.Serializer.fromJson(JsonParser.parseString(json));
+            return Component.Serializer.fromJson(JsonParser.parseString(json), RegistryAccess.EMPTY);
         }catch (JsonParseException e){
             return Component.literal(json);
         }
@@ -52,8 +53,8 @@ public final class PlatformTools {
     public static Component fromJson(Object obj) {
         if (obj == null || obj instanceof String) {
             return fromJson((String) obj);
-        } else if (obj instanceof JsonElement) {
-            return Component.Serializer.fromJson((JsonElement) obj);
+        } else if (obj instanceof JsonElement json) {
+            return Component.Serializer.fromJson(json, RegistryAccess.EMPTY);
         } else throw new IllegalArgumentException("Can not create Text from " + obj.getClass().getName());
     }
 

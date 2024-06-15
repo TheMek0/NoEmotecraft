@@ -56,8 +56,7 @@ public class FullMenuScreenHelper extends EmoteConfigScreen {
     }
 
     private EmoteListFS newEmoteList(int boxSize, int height, int width){
-        int l = width > (width + boxSize)/2 + 120 ? (height + boxSize)/2 + 10 : height - 80;
-        return new EmoteListFS(getMinecraft(), boxSize, height, (height-boxSize)/2+10, l, 36, this);
+        return new EmoteListFS(getMinecraft(), 44, boxSize, height-44-10, 36, this);
     }
 
     @Override
@@ -68,27 +67,26 @@ public class FullMenuScreenHelper extends EmoteConfigScreen {
 
     @Override
     public void render(@NotNull GuiGraphics matrices, int mouseX, int mouseY, float delta){
-        renderDirtBackground(matrices);
+        super.render(matrices, mouseX, mouseY, delta);
         this.emoteList.renderThis(matrices, mouseX, mouseY, delta);
         this.searchBox.render(matrices, mouseX, mouseY, delta);
-        super.render(matrices, mouseX, mouseY, delta);
     }
 
 
-    public static class EmoteListFS extends AbstractEmoteListWidget<EmoteListFS.EmotelistEntryImpl> {
+    public static class EmoteListFS extends AbstractEmoteListWidget<EmoteListFS.EmoteListEntryImpl> {
 
-        public EmoteListFS(Minecraft minecraftClient, int i, int j, int k, int l, int m, Screen screen) {
-            super(minecraftClient, i, j, k, l, m, screen);
+        public EmoteListFS(Minecraft minecraftClient, int y, int width, int height, int itemHeight, Screen screen) {
+            super(minecraftClient, y, width, height, itemHeight, screen);
         }
 
         @Override
-        protected EmotelistEntryImpl newEmoteEntry(Minecraft client, EmoteHolder emoteHolder) {
-            return new EmotelistEntryImpl(client, emoteHolder);
+        protected EmoteListEntryImpl newEmoteEntry(Minecraft client, EmoteHolder emoteHolder) {
+            return new EmoteListEntryImpl(client, emoteHolder);
         }
 
-        public static class EmotelistEntryImpl extends AbstractEmoteListWidget.AbstractEmoteEntry<EmotelistEntryImpl>{
+        public static class EmoteListEntryImpl extends AbstractEmoteListWidget.AbstractEmoteEntry<EmoteListEntryImpl>{
 
-            public EmotelistEntryImpl(Minecraft client, EmoteHolder emote) {
+            public EmoteListEntryImpl(Minecraft client, EmoteHolder emote) {
                 super(client, emote);
             }
 

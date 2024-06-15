@@ -40,29 +40,36 @@ import java.util.function.Function;
  * I won't ever again need to add here anything
  * just to reimplement it in different environments (Forge/Fabric/1.16/1.12 etc...)
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
 public class ConfigScreen extends OptionsSubScreen {
     private OptionsList options;
 
 
     public ConfigScreen(Screen parent) {
-        super(parent, Minecraft.getInstance().options, Component.literal("emotecraft.otherconfig"));
+        super(parent, Minecraft.getInstance().options, Component.translatable("emotecraft.otherconfig"));
     }
 
     @Override
     protected void init() {
         super.init();
-        options = new OptionsList(this.minecraft, this.width, this.height, 32, this.height - 32, 25);
+        options = new OptionsList(this.minecraft, this.width, this.height, this);
         //I just copy these values from VideoOptionsScreen...
         options.addBig(DummyEntry.of("emotecraft.otherconfig.category.general"));
 
         EmoteInstance.config.iterateGeneral(entry -> addConfigEntry(entry, options));
 
         options.addBig(DummyEntry.of("emotecraft.otherconfig.category.expert"));
-        options.addBig(DummyEntry.of(""));
 
         EmoteInstance.config.iterateExpert(entry -> addConfigEntry(entry, options));
+        this.addWidget(options);
+    }
 
+    @Override
+    protected void addTitle() {
+
+    }
+
+    @Override
+    protected void addFooter() {
         this.addRenderableWidget(new Button.Builder(Component.translatable("controls.reset"), (button) -> {
             this.minecraft.setScreen(new ConfirmScreen(
                     this::resetAll,
@@ -74,8 +81,6 @@ public class ConfigScreen extends OptionsSubScreen {
             ClientSerializer.saveConfig();
             this.minecraft.setScreen(this.lastScreen);
         })).pos(this.width / 2 - 155 + 160, this.height - 27).width(150).build());
-
-        this.addWidget(options);
     }
 
     private void addConfigEntry(SerializableConfig.ConfigEntry<?> entry, OptionsList options) {
@@ -130,16 +135,14 @@ public class ConfigScreen extends OptionsSubScreen {
     private void resetAll(boolean bl) {
         if (bl) {
             EmoteInstance.config.iterate(SerializableConfig.ConfigEntry::resetToDefault);
-            this.init(); //reload screen
         }
-        this.minecraft.setScreen(this);
+        this.minecraft.setScreen(new ConfigScreen(this.lastScreen));
     }
 
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-        this.renderBackground(graphics);
+        super.render(graphics, mouseX, mouseY, delta);
         this.options.render(graphics, mouseX, mouseY, delta);
         graphics.drawCenteredString(this.font, this.title, this.width / 2, 5, 16777215);
-        super.render(graphics, mouseX, mouseY, delta);
     }
 
 
@@ -148,6 +151,7 @@ public class ConfigScreen extends OptionsSubScreen {
         return Minecraft.getInstance().font.split(component, 200);
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static class DummyEntry implements OptionInstance.ValueSet {
         private final MutableComponent text;
 

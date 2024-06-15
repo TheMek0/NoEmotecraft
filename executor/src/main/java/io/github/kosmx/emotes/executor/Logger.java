@@ -15,4 +15,20 @@ public interface Logger {
 
      void writeLog(Level level, String msg);
 
+     void log(Level level, String msg, Throwable exc);
+
+    /**
+     * Logs error with stacktrace if debug is enabled, else without
+     * @param level level
+     * @param msg message
+     * @param exc exception
+     */
+     default void logDebug(Level level, String msg, Throwable exc){
+         if (EmoteInstance.config != null && EmoteInstance.config.showDebug.get()) {
+             log(level, msg, exc);
+         } else {
+             log(level, msg+": "+exc.getMessage());
+         }
+     }
+
 }

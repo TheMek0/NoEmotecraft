@@ -31,7 +31,7 @@ version = rootProject.mod_version
 loom{
     accessWidenerPath = project(":${project.module_name}:archCommon").loom.accessWidenerPath
 
-    silentMojangMappingsLicense()
+//    silentMojangMappingsLicense()
     forge {
         mixinConfig "emotecraft.mixins.json"
         mixinConfig "emotecraft-arch.mixins.json"

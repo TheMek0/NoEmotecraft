@@ -3,6 +3,7 @@ package io.github.kosmx.emotes.server.geyser;
 import io.github.kosmx.emotes.common.tools.BiMap;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.UUID;
 
 public class EmoteMappings {
@@ -10,11 +11,7 @@ public class EmoteMappings {
     final BiMap<UUID, UUID> map;
 
     public EmoteMappings(BiMap<UUID, UUID> map){
-        if (map != null) {
-            this.map = map;
-        } else {
-            this.map = new BiMap<>();
-        }
+        this.map = Objects.requireNonNullElseGet(map, BiMap::new);
     }
 
     @Nullable

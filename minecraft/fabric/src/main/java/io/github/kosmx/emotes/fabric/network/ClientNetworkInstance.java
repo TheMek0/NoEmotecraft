@@ -3,14 +3,12 @@ package io.github.kosmx.emotes.fabric.network;
 import io.github.kosmx.emotes.api.proxy.AbstractNetworkInstance;
 import io.github.kosmx.emotes.common.network.EmotePacket;
 import io.github.kosmx.emotes.inline.TmpGetters;
-import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +32,10 @@ public class ClientNetworkInstance extends AbstractNetworkInstance implements C2
     }
 
     @Override
+    public void presenceResponse() {
+    }
+
+    @Override
     public void onChannelRegister(ClientPacketListener handler, PacketSender sender, Minecraft client, List<ResourceLocation> channels) {
         if(channels.contains(ServerNetwork.channelID) && connectState.incrementAndGet() == 2){
             connectState.set(0);
@@ -42,7 +44,7 @@ public class ClientNetworkInstance extends AbstractNetworkInstance implements C2
     }
 
     private void playerJoin(ClientPacketListener clientPacketListener, PacketSender packetSender, Minecraft minecraft) {
-        ClientPlayNetworking.registerReceiver(ServerNetwork.channelID, this::receiveMessage);
+        ClientPlayNetworking.registerReceiver(EmoteCustomPayload.TYPE, this::receivePayload);
         if (connectState.incrementAndGet() == 2) {
             connectState.set(0);
             this.sendConfigCallback();
@@ -55,15 +57,8 @@ public class ClientNetworkInstance extends AbstractNetworkInstance implements C2
         this.disconnect(); //:D
     }
 
-    void receiveMessage(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender){
-        if(buf.isDirect() || buf.isReadOnly()){ //If the received ByteBuf is direct i have to copy that onto the heap
-            byte[] bytes = new byte[buf.readableBytes()];
-            buf.getBytes(buf.readerIndex(), bytes);
-            receiveMessage(bytes);
-        }
-        else {
-            receiveMessage(buf.array()); //if heap, I can just use it's byte-array
-        }
+    void receivePayload(EmoteCustomPayload type, ClientPlayNetworking.Context ctx){
+        receiveMessage(type.getData());
     }
 
     @Override
@@ -82,7 +77,7 @@ public class ClientNetworkInstance extends AbstractNetworkInstance implements C2
             builder.configureTarget(target);
         }
         EmotePacket writer = builder.build();
-        ClientPlayNetworking.send(ServerNetwork.channelID, new FriendlyByteBuf(Unpooled.wrappedBuffer(writer.write().array())));
+        ClientPlayNetworking.send(new EmoteCustomPayload(writer.write().array()));
         if(writer.data.emoteData != null && writer.data.emoteData.extraData.containsKey("song") && !writer.data.writeSong){
             TmpGetters.getClientMethods().sendChatMessage(Component.translatable("emotecraft.song_too_big_to_send"));
         }

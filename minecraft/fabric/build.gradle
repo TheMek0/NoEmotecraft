@@ -14,7 +14,7 @@ architectury{
 
 loom{
     accessWidenerPath = project(":${project.module_name}:archCommon").loom.accessWidenerPath
-    silentMojangMappingsLicense()
+//    silentMojangMappingsLicense()
 }
 
 
@@ -148,7 +148,7 @@ if(keysExists) {
         versionNumber = "${project.mod_version}+${project.minecraft_version}-fabric"
         versionName = "${project.mod_version}"
 
-        gameVersions = ["1.20", "1.20.1"]
+        gameVersions = ["1.20.5", "1.20.6"]
         changelog = changes
         loaders = ["fabric", "quilt"]
         failSilently = false

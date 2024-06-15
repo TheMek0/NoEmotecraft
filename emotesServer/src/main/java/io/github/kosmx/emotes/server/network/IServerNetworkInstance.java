@@ -12,24 +12,24 @@ import java.util.logging.Level;
 
 public interface IServerNetworkInstance extends INetworkInstance {
 
-    @Override
-    default void presenceResponse() {
-        INetworkInstance.super.presenceResponse();
+
+    // static due to some jvm error
+    static void presenceResponse(IServerNetworkInstance inst) {
         NetData configData = new EmotePacket.Builder().configureToConfigExchange(true).build().data;
-        if (trackPlayState()) {
+        if (inst.trackPlayState()) {
             configData.versions.put((byte)0x80, (byte)0x01);
         }
         try {
-            this.sendMessage(new EmotePacket.Builder(configData), null);
+            inst.sendMessage(new EmotePacket.Builder(configData), null);
         } catch(IOException e) {
             EmoteInstance.instance.getLogger().log(Level.SEVERE, e.getMessage());
         }
-        if(this.getRemoteVersions().getOrDefault((byte)11, (byte)0) >= 0) {
+        if(inst.getRemoteVersions().getOrDefault((byte)11, (byte)0) >= 0) {
             for (KeyframeAnimation emote : UniversalEmoteSerializer.serverEmotes.values()) {
                 try{
-                    this.sendMessage(new EmotePacket.Builder().configureToSaveEmote(emote).setSizeLimit(0x100000), null); //1 MB
+                    inst.sendMessage(new EmotePacket.Builder().configureToSaveEmote(emote).setSizeLimit(0x100000), null); //1 MB
                 }catch (IOException e){
-                    e.printStackTrace();
+                    EmoteInstance.instance.getLogger().log(Level.WARNING, "Failed to send save emote message", e);
                 }
             }
         }

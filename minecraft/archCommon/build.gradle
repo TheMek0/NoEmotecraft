@@ -7,9 +7,10 @@ architectury{
     //minecraft = project.minecraft_version
 }
 
+
 loom{
     accessWidenerPath = file("src/main/resources/emotes.accesswidener")
-    silentMojangMappingsLicense()
+//    silentMojangMappingsLicense()
 }
 
 version = rootProject.mod_version

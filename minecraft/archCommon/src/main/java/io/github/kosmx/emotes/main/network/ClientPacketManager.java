@@ -48,10 +48,7 @@ public final class ClientPacketManager extends EmotesProxyManager {
                             builder.setVersion(network.getRemoteVersions());
                             network.sendMessage(builder, target);    //everything is happening on the heap, there won't be any memory leak
                         } catch(IOException exception) {
-                            EmoteInstance.instance.getLogger().log(Level.WARNING, "Error while sending packet: " + exception.getMessage(), true);
-                            if (EmoteInstance.config.showDebug.get()) {
-                                exception.printStackTrace();
-                            }
+                            EmoteInstance.instance.getLogger().logDebug(Level.WARNING, "Error while sending packet", exception);
                         }
                     }
                 }
@@ -65,10 +62,7 @@ public final class ClientPacketManager extends EmotesProxyManager {
                 defaultNetwork.sendMessage(packetBuilder, target);
             }
             catch (IOException exception){
-                EmoteInstance.instance.getLogger().log(Level.WARNING, "Error while sending packet: " + exception.getMessage(), true);
-                if(EmoteInstance.config.showDebug.get()) {
-                    exception.printStackTrace();
-                }
+                EmoteInstance.instance.getLogger().logDebug(Level.WARNING, "Error while sending packet", exception);
             }
         }
     }
@@ -86,25 +80,19 @@ public final class ClientPacketManager extends EmotesProxyManager {
                 data.player = player;
             }
             if(data.player == null && data.purpose.playerBound){
-                //this is not exactly IO but something went wrong in IO so it is IO fail
+                //this is not exactly IO but something went wrong in IO, so it is IO fail
                 throw new IOException("Didn't received any player information");
             }
 
             try {
                 ClientEmotePlay.executeMessage(data, networkInstance);
-            }
-            catch (Exception e){//I don't want to break the whole game with a bad message but I'll warn with the highest level
-                EmoteInstance.instance.getLogger().log(Level.SEVERE, "Critical error has occurred while receiving emote: " + e.getMessage(), true);
-                e.printStackTrace();
-
+            } catch (Exception e) {//I don't want to break the whole game with a bad message, but I'll warn with the highest level
+                EmoteInstance.instance.getLogger().log(Level.SEVERE, "Critical error has occurred while receiving emote", e);
             }
 
         }
         catch (IOException e){
-            EmoteInstance.instance.getLogger().log(Level.WARNING, "Error while receiving packet: " + e.getMessage(), true);
-            if(EmoteInstance.config.showDebug.get()) {
-                e.printStackTrace();
-            }
+            EmoteInstance.instance.getLogger().logDebug(Level.WARNING, "Error while receiving packet", e);
         }
     }
 

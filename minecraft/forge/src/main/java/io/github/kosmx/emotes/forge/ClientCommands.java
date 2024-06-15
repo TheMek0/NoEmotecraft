@@ -61,7 +61,7 @@ public class ClientCommands {
 
             List<String> suggestions = new LinkedList<>();
             for (var emote : emotes.values()) {
-                if (!emote.name.getString().equals("")) {
+                if (!emote.name.getString().isEmpty()) {
                     String name = emote.name.getString();
                     if (name.contains(" ")) {
                         name = "\"" + name + "\"";

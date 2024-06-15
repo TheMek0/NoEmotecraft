@@ -54,7 +54,6 @@ public class ForgeWrapper {
             ClientInit.setupClient();
         }
         ServerNetwork.instance.init();
-
     }
 
     public static void log(Level level, String msg){

@@ -76,10 +76,10 @@ jar{
     archiveClassifier.set("bukkit")
 }
 
-task copyArtifacts{
+tasks.register('copyArtifacts') {
     dependsOn('build')
     doLast {
-        copy{
+        copy {
             from "${project.layout.buildDirectory}/libs/${project.archives_base_name}-${rootProject.mod_version}-bukkit.jar"
             into "${rootProject.projectDir}/artifacts"
         }

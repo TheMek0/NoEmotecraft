@@ -3,13 +3,13 @@ package io.github.kosmx.emotes.fabric.mixin;
 
 import io.github.kosmx.emotes.api.proxy.AbstractNetworkInstance;
 import io.github.kosmx.emotes.common.network.EmotePacket;
+import io.github.kosmx.emotes.fabric.FabricWrapper;
+import io.github.kosmx.emotes.fabric.network.EmoteCustomPayload;
 import io.github.kosmx.emotes.fabric.network.ServerNetwork;
 import io.github.kosmx.emotes.server.network.EmotePlayTracker;
 import io.github.kosmx.emotes.server.network.IServerNetworkInstance;
-import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -27,7 +27,6 @@ public abstract class ServerPlayNetworkInstance implements IServerNetworkInstanc
 
     @Unique
     private final EmotePlayTracker emoteTracker = new EmotePlayTracker();
-    @Shadow public abstract void send(Packet<?> packet);
 
     @Shadow public abstract ServerPlayer getPlayer();
 
@@ -59,23 +58,29 @@ public abstract class ServerPlayNetworkInstance implements IServerNetworkInstanc
     }
 
     public void sendMessage(byte[] bytes, @Nullable UUID target) {
-        this.send(ServerPlayNetworking.createS2CPacket(ServerNetwork.channelID, new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes))));
+        this.sendPacket(ServerPlayNetworking.createS2CPacket(new EmoteCustomPayload(bytes)));
+    }
+
+    @Unique
+    public void sendPacket(Packet<?> packet){
+        ServerGamePacketListenerImpl s = (ServerGamePacketListenerImpl) (Object) this;
+        //noinspection UnreachableCode
+        s.send(packet);
     }
 
     @Override
     public void sendConfigCallback() {
         EmotePacket.Builder builder = new EmotePacket.Builder().configureToConfigExchange(true);
-        try{
-            this.send(ServerPlayNetworking.createS2CPacket(ServerNetwork.channelID, new FriendlyByteBuf(Unpooled.wrappedBuffer(builder.build().write()))));
-        }
-        catch (IOException e){
-            e.printStackTrace();
+        try {
+            this.sendPacket(ServerPlayNetworking.createS2CPacket(new EmoteCustomPayload(builder.build().write().array())));
+        } catch (IOException e){
+            FabricWrapper.logger.error("Failed to send config callback", e);
         }
     }
 
     @Override
     public void presenceResponse() {
-        IServerNetworkInstance.super.presenceResponse();
+        IServerNetworkInstance.presenceResponse(this);
         for (ServerPlayer player : PlayerLookup.tracking(this.getPlayer())) {
                 ServerNetwork.getInstance().playerStartTracking(player, this.getPlayer());
         }
