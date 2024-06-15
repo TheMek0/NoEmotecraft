@@ -9,7 +9,7 @@ jobs:
   build:
     strategy:
       matrix:
-        java: [17]
+        java: [21]
         os: [ubuntu-latest, windows-latest]
         
     runs-on: ${{ matrix.os }}
@@ -38,7 +38,7 @@ jobs:
       with:
         arguments: collectArtifacts
     - name: capture build artifacts
-      if: ${{ runner.os == 'Linux' && matrix.java == '17' }}
+      if: ${{ runner.os == 'Linux' && matrix.java == '21' }}
       uses: actions/upload-artifact@v2
       with:
         name: artifacts
