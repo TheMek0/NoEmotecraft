@@ -36,6 +36,11 @@ public class BungeeNetworkInstance extends AbstractNetworkInstance implements IS
     }
 
     @Override
+    public void presenceResponse() {
+
+    }
+
+    @Override
     public void sendMessage(byte[] bytes, @Nullable UUID target) {
         player.sendData(CommonData.getIDAsString(CommonData.playEmoteID), bytes);
     }

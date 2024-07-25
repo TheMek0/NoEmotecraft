@@ -49,7 +49,7 @@ public class VelocityWrapper {
         } else {
             CommonData.isLoaded = true;
         }
-        EmoteInstance.instance = new VelocityInstance(logger::log);
+        EmoteInstance.instance = new VelocityInstance((io.github.kosmx.emotes.executor.Logger) this.logger);
         Serializer.INSTANCE = new Serializer(); // it does register itself
         EmoteInstance.config = Serializer.getConfig();
         UniversalEmoteSerializer.loadEmotes();
@@ -69,5 +69,4 @@ public class VelocityWrapper {
     public void shutdown(ProxyShutdownEvent event) {
         shutdown();
     }
-
 }

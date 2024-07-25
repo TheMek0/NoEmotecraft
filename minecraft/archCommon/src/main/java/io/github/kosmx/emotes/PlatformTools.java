@@ -59,6 +59,6 @@ public final class PlatformTools {
     }
 
     public static ResourceLocation newIdentifier(String id){
-        return new ResourceLocation(CommonData.MOD_ID, id);
+        return ResourceLocation.parse(CommonData.MOD_ID + ":" + id);
     }
 }

@@ -3,7 +3,7 @@ plugins {
 }
 
 architectury{
-    common("fabric", "forge")
+    common("fabric")
     //minecraft = project.minecraft_version
 }
 
@@ -13,7 +13,7 @@ loom{
 //    silentMojangMappingsLicense()
 }
 
-version = rootProject.mod_version
+version = project.version_base
 
 dependencies {
     implementation project(':emotesAssets')

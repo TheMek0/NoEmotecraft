@@ -18,7 +18,7 @@ import net.minecraft.client.gui.components.OptionsList;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.ConfirmScreen;
-import net.minecraft.client.gui.screens.OptionsSubScreen;
+import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -51,7 +51,7 @@ public class ConfigScreen extends OptionsSubScreen {
     @Override
     protected void init() {
         super.init();
-        options = new OptionsList(this.minecraft, this.width, this.height, this);
+        options = new OptionsList(this.minecraft, 4, this);
         //I just copy these values from VideoOptionsScreen...
         options.addBig(DummyEntry.of("emotecraft.otherconfig.category.general"));
 
@@ -65,6 +65,11 @@ public class ConfigScreen extends OptionsSubScreen {
 
     @Override
     protected void addTitle() {
+
+    }
+
+    @Override
+    protected void addOptions() {
 
     }
 

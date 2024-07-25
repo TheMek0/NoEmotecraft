@@ -84,7 +84,6 @@ public class BukkitWrapper extends JavaPlugin {
 
             @Override
             public void onPacketReceiving(PacketEvent packetEvent) {
-
             }
         });
     }

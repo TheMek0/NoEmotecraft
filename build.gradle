@@ -1,7 +1,7 @@
 plugins{
     id 'java'
-    id 'dev.architectury.loom' version '1.6.+' apply false //Forge loom :D
-    id "architectury-plugin" version "3.4-SNAPSHOT" apply true
+    id 'dev.architectury.loom' version '1.7.+' apply false //Forge loom :D
+    id "architectury-plugin" version "3.4.+" apply false
     id "com.github.johnrengelman.shadow" version "8.1.1" apply false
     //id "com.dorongold.task-tree" version "1.5" Current version doesn't support gradle 6.8
 
@@ -56,91 +56,6 @@ allprojects {
 
 }
 
-//---------------- Publishing ----------------
-
-ext.ENV = System.getenv()
-
-ext.cfType = ENV.RELEASE_TYPE ? ENV.RELEASE_TYPE : "alpha"
-ext.isRelease = cfType == "release"
-ext.changes = ENV.CHANGELOG ? ENV.CHANGELOG.replaceAll("\\\\n", "\n") : ""
-ext.mod_version = project.version_base
-
-
-if(!isRelease){
-    ext.mod_version = "${project.version_base}-${cfType[0]}.${ ENV.BUILD_NUMBER ? "build.${ENV.BUILD_NUMBER}" : 'git rev-parse --verify --short HEAD'.execute().text.trim()}"
-}
-
-
-List<File> releaseArtifacts
-
-ext.keysExists = ENV.GH_TOKEN != null || project.getGradle().getStartParameter().isDryRun()
-
-if(keysExists) {
-    project.ext.keys = new Properties()
-    if (project.getGradle().getStartParameter().isDryRun()) {
-        println("Dry run, loading publish scripts")
-        //All of these are fake, don't waste your time with it. (Copied from API docs and random generated)
-        project.ext.keys.modrinth_token = "gho_pJ9dGXVKpfzZp4PUHSxYEq9hjk0h288Gwj4S"
-        project.ext.keys.curseforge_key = "00000000-0000-0000-0000-000000000000"
-        project.ext.keys.github_token = "gh_0123456789"
-        project.ext.keys.kosmx_maven = "V2h5IGRpZCB5b3UgZGVjb2RlIGl0PyAg"
-    } else {
-        println("Keys loaded, loading publish scripts")
-        project.ext.keys.modrinth_token = ENV.MODRINTH_TOKEN
-        project.ext.keys.curseforge_key = ENV.CURSEFORGE_TOKEN
-        project.ext.keys.github_token = ENV.GH_TOKEN
-        project.ext.keys.kosmx_maven = ENV.KOSMX_TOKEN
-    }
-
-
-    githubRelease {
-        token project.keys.github_token // This is your personal access token with Repo permissions
-        // You get this from your user settings > developer settings > Personal Access Tokens
-        owner "KosmX"
-        // default is the last part of your group. Eg group: "com.github.breadmoirai" => owner: "breadmoirai"
-        repo "emotes" // by default this is set to your project name
-        tagName "${project.mod_version}" // by default this is set to "v${project.version}"
-        targetCommitish "dev" // by default this is set to "master"
-        releaseName "Emotecraft-${project.mod_version}" // Release title, by default this is the same as the tagName
-        body changes // by default this is empty
-        draft false // by default this is false
-        prerelease !isRelease // by default this is false
-        //releaseAssets = releaseArtifacts
-        // this points to which files you want to upload as assets with your release
-        //releaseAssets jar.destinationDir.listFiles
-        overwrite true // by default false; if set to true, will delete an existing release with the same tag and name
-        dryRun false // by default false; you can use this to see what actions would be taken without making a release
-        apiEndpoint "https://api.github.com" // should only change for github enterprise users
-        client // This is the okhttp client used for http requests
-    }
-
-
-    tasks.register('autoPublish') {
-        //dependsOn(':forge:build',)
-        //dependsOn(':fabric:build', ':bukkit:build')
-        dependsOn('collectArtifacts')
-
-        //Configure Modrinth and GitHub with artifacts to release
-        doFirst {
-            tasks.githubRelease.releaseAssets = releaseArtifacts
-        }
-
-        finalizedBy(tasks.githubRelease)
-
-        finalizedBy(':minecraft:publishMod')
-
-        finalizedBy(':emotesAPI:publish')
-        finalizedBy(':executor:publish')
-        finalizedBy(':emotesServer:publish')
-        finalizedBy(':emotesAssets:publish')
-        finalizedBy(':bukkit:publish')
-
-    }
-}
-else {
-    println("Keys are not in ENV, publishing is not possible")
-}
-
 //Build all modules task :D
 tasks.register('buildAll') {
     dependsOn(':bukkit:build')
@@ -161,9 +76,9 @@ tasks.register('collectArtifacts') {
     dependsOn(':bungee:copyArtifacts')
     dependsOn(':velocity:copyArtifacts')
     dependsOn('minecraft:copyArtifacts')
-    doLast {
-        releaseArtifacts = project.getProjectDir().toPath().resolve("artifacts").toFile().listFiles()
-    }
+//    doLast {
+//        releaseArtifacts = project.getProjectDir().toPath().resolve("artifacts").toFile().listFiles()
+//    }
 }
 
 clean {

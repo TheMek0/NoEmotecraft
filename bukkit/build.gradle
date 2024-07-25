@@ -7,7 +7,7 @@ plugins {
 
 project.archivesBaseName = project.archives_base_name
 //project.version = project.mod_version
-version = project.mod_version
+version = project.version_base
 
 
 repositories {
@@ -80,7 +80,7 @@ tasks.register('copyArtifacts') {
     dependsOn('build')
     doLast {
         copy {
-            from "${project.layout.buildDirectory}/libs/${project.archives_base_name}-${rootProject.mod_version}-bukkit.jar"
+            from "${project.layout.buildDirectory}/libs/${project.archives_base_name}-${project.version}-bukkit.jar"
             into "${rootProject.projectDir}/artifacts"
         }
     }
@@ -133,20 +133,6 @@ publishing {
 
     // select the repositories you want to publish to
     repositories {
-        // uncomment to publish to the local maven
-        if (project.keysExists) {
-            repositories {
-                maven {
-                    url = 'https://maven.kosmx.dev/'
-                    credentials {
-                        username = 'kosmx'
-                        password = project.keys.kosmx_maven
-                    }
-                }
-            }
-        }
-        else {
-            mavenLocal()
-        }
+        mavenLocal()
     }
 }

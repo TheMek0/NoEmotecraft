@@ -37,6 +37,11 @@ public class VelocityNetworkInstance extends AbstractNetworkInstance implements 
     }
 
     @Override
+    public void presenceResponse() {
+
+    }
+
+    @Override
     public void sendMessage(byte[] bytes, @Nullable UUID target) {
         player.sendPluginMessage(VelocityWrapper.EmotePacket, bytes);
     }

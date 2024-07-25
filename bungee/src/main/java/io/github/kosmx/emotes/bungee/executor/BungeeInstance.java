@@ -18,7 +18,7 @@ public class BungeeInstance extends EmoteInstance {
 
     @Override
     public Logger getLogger() {
-        return this.logger::log;
+        return (Logger) this.logger;
     }
 
 

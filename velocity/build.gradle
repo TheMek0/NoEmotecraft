@@ -5,7 +5,7 @@ plugins {
 version 'unspecified'
 
 project.archivesBaseName = project.archives_base_name
-project.version = project.mod_version
+project.version = project.version_base
 
 repositories {
     mavenCentral()
@@ -51,7 +51,7 @@ task copyArtifacts {
     dependsOn('build')
     doLast {
         copy {
-            from "${project.buildDir}/libs/${project.archives_base_name}-${project.mod_version}-velocity.jar"
+            from "${project.buildDir}/libs/${project.archives_base_name}-${project.version}-velocity.jar"
             into "${rootProject.projectDir}/artifacts"
         }
     }

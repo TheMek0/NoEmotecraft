@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = rootProject.mod_version
+version = project.version_base
 
 repositories {
     mavenCentral()
@@ -95,20 +95,6 @@ publishing {
 
     // select the repositories you want to publish to
     repositories {
-        // uncomment to publish to the local maven
-        if (project.keysExists) {
-            repositories {
-                maven {
-                    url = 'https://maven.kosmx.dev/'
-                    credentials {
-                        username = 'kosmx'
-                        password = project.keys.kosmx_maven
-                    }
-                }
-            }
-        }
-        else {
-            mavenLocal()
-        }
+        mavenLocal()
     }
 }

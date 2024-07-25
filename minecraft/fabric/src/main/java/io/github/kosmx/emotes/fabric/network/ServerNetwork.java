@@ -19,8 +19,8 @@ import java.util.UUID;
 
 
 public class ServerNetwork extends AbstractServerEmotePlay<Player> {
-    public static final ResourceLocation channelID = new ResourceLocation(CommonData.MOD_ID, CommonData.playEmoteID);
-    public static final ResourceLocation geyserChannelID = new ResourceLocation("geyser", "emote");
+    public static final ResourceLocation channelID = ResourceLocation.parse(CommonData.MOD_ID + ":" + CommonData.playEmoteID);
+    public static final ResourceLocation geyserChannelID = ResourceLocation.parse("geyser:emote");
 
     public static ServerNetwork instance = new ServerNetwork();
 

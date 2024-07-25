@@ -4,7 +4,7 @@ plugins {
     id 'signing' //why not if I can?
 }
 
-version = rootProject.mod_version
+version = project.version_base
 
 //sourceCompatibility = JavaVersion.VERSION_1_8
 //targetCompatibility = JavaVersion.VERSION_1_8
@@ -112,20 +112,6 @@ publishing {
 
     // select the repositories you want to publish to
     repositories {
-        // uncomment to publish to the local maven
-        if (project.keysExists) {
-            repositories {
-                maven {
-                    url = 'https://maven.kosmx.dev/'
-                    credentials {
-                        username = 'kosmx'
-                        password = project.keys.kosmx_maven
-                    }
-                }
-            }
-        }
-        else {
-            mavenLocal()
-        }
+        mavenLocal()
     }
 }

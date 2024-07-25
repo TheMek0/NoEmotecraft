@@ -7,7 +7,7 @@ version 'unspecified'
 
 project.archivesBaseName = project.archives_base_name
 //project.version = project.mod_version
-project.version = project.mod_version
+project.version = project.version_base
 
 repositories {
     mavenCentral()
@@ -52,7 +52,7 @@ processResources{
 
 //shadowJar{
 //    configurations = [project.configurations.compileModule]
-//   archiveClassifier.set("bukkit")
+//    archiveClassifier.set("bukkit")
 //}
 
 compileJava {
@@ -70,7 +70,7 @@ task copyArtifacts{
     dependsOn('build')
     doLast {
         copy{
-            from "${project.buildDir}/libs/${project.archives_base_name}-${project.mod_version}-bungee.jar"
+            from "${project.buildDir}/libs/${project.archives_base_name}-${project.version}-bungee.jar"
             into "${rootProject.projectDir}/artifacts"
         }
     }

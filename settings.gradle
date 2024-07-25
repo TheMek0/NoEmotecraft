@@ -33,7 +33,6 @@ include 'emotesAssets'
 include 'minecraft'
 include 'minecraft:archCommon'
 include 'minecraft:fabric'
-include 'minecraft:forge'
 
 //Bukkit plugin stuff
 include 'bukkit'
