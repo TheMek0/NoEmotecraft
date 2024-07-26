@@ -13,7 +13,7 @@ loom{
 //    silentMojangMappingsLicense()
 }
 
-version = project.version_base
+
 
 dependencies {
     implementation project(':emotesAssets')

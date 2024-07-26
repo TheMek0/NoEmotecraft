@@ -4,11 +4,8 @@ plugins {
     id 'maven-publish'
 }
 
-
 project.archivesBaseName = project.archives_base_name
-//project.version = project.mod_version
-version = project.version_base
-
+project.version = project.version_base
 
 repositories {
     mavenCentral()
@@ -51,11 +48,11 @@ dependencies {
 
 processResources{
 
-    inputs.property "version", project.version
+    inputs.property "version", project.version_base
     inputs.property "description", rootProject.mod_description
 
     filesMatching("plugin.yml"){
-        expand version: project.version, description: rootProject.mod_description
+        expand version: project.version_base, description: rootProject.mod_description
     }
 
 }
@@ -80,11 +77,12 @@ tasks.register('copyArtifacts') {
     dependsOn('build')
     doLast {
         copy {
-            from "${project.layout.buildDirectory}/libs/${project.archives_base_name}-${project.version}-bukkit.jar"
+            from "${project.buildDir}/libs/${project.archivesBaseName}-${project.version}-bukkit.jar"
             into "${rootProject.projectDir}/artifacts"
         }
     }
 }
+
 
 java {
     withSourcesJar()

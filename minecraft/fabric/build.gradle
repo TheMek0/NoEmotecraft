@@ -60,16 +60,14 @@ dependencies {
     include modImplementation("dev.kosmx.player-anim:player-animation-lib-fabric:${project.player_anim}")
 }
 
-
 processResources {
-    inputs.property "version", project.version
+    inputs.property "version", project.version_base
     inputs.property "description", rootProject.mod_description
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version, "description": rootProject.mod_description
+        expand "version": project.version_base, "description": rootProject.mod_description
     }
 }
-
 
 // ensure that the encoding is set to UTF-8, no matter what the system default is
 // this fixes some edge cases with special characters not displaying correctly
@@ -116,7 +114,7 @@ publishing {
             artifact(jar) {
                 builtBy remapJar
             }
-            //artifact("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}.jar"){
+            //artifact("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version_base}.jar"){
             //	builtBy remapJar
             //}
             artifact(remapJar) {

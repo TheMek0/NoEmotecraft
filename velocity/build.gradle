@@ -2,8 +2,6 @@ plugins {
     id 'java'
 }
 
-version 'unspecified'
-
 project.archivesBaseName = project.archives_base_name
 project.version = project.version_base
 
@@ -47,11 +45,11 @@ jar {
     archiveClassifier.set("velocity")
 }
 
-task copyArtifacts {
+tasks.register('copyArtifacts') {
     dependsOn('build')
     doLast {
         copy {
-            from "${project.buildDir}/libs/${project.archives_base_name}-${project.version}-velocity.jar"
+            from "${project.buildDir}/libs/${project.archivesBaseName}-${project.version}-velocity.jar"
             into "${rootProject.projectDir}/artifacts"
         }
     }

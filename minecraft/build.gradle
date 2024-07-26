@@ -2,6 +2,9 @@ plugins{
     id 'java'
 }
 
+project.version = project.version_base
+project.archivesBaseName = "${project.archives_base_name}-for-MC${project.minecraft_version}-${project.version}"
+
 subprojects {
     apply plugin: 'dev.architectury.loom'
     dependencies {
@@ -28,8 +31,10 @@ tasks.register('copyArtifacts') {
     dependsOn("buildAll")
     doLast {
         copy {
-            from "${project.projectDir}/fabric/build/libs/${project.archives_base_name}-for-MC${project.minecraft_version}-${project.version}-fabric.jar"
+            from "${project.projectDir}/fabric/build/libs/${project.archivesBaseName}-fabric.jar"
             into "${rootProject.projectDir}/artifacts"
         }
     }
 }
+
+

@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = project.version_base
+
 
 repositories {
     mavenCentral()
@@ -52,7 +52,7 @@ publishing {
                 def apiNode = depsNode.appendNode("dependency")
                 apiNode.appendNode("groupId", project.group)
                 apiNode.appendNode("artifactId", "emotesAPI")
-                apiNode.appendNode("version", project.version)
+                apiNode.appendNode("version", project.version_base)
                 apiNode.appendNode("scope", "compile")
             }
 

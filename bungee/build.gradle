@@ -3,10 +3,7 @@ plugins {
     //id "com.github.johnrengelman.shadow" version "6.1.0"
 }
 
-version 'unspecified'
-
 project.archivesBaseName = project.archives_base_name
-//project.version = project.mod_version
 project.version = project.version_base
 
 repositories {
@@ -42,10 +39,10 @@ dependencies {
 
 processResources{
 
-    inputs.property "version", project.version
+    inputs.property "version", project.version_base
 
     filesMatching("bungee.yml"){
-        expand version: project.version
+        expand version: project.version_base
     }
 
 }
@@ -66,13 +63,12 @@ jar{
     archiveClassifier.set("bungee")
 }
 
-task copyArtifacts{
+tasks.register('copyArtifacts') {
     dependsOn('build')
     doLast {
-        copy{
-            from "${project.buildDir}/libs/${project.archives_base_name}-${project.version}-bungee.jar"
+        copy {
+            from "${project.buildDir}/libs/${project.archivesBaseName}-${project.version}-bungee.jar"
             into "${rootProject.projectDir}/artifacts"
         }
     }
 }
-

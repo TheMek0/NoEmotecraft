@@ -9,7 +9,7 @@ plugins {
 //apply plugin: "architectury-plugin"
 //apply plugin: 'com.github.johnrengelman.shadow'
 
-version = project.version_base
+
 
 configurations {
     dev
@@ -82,19 +82,19 @@ publishing {
                 def apiNode = depsNode.appendNode("dependency")
                 apiNode.appendNode("groupId", project.group)
                 apiNode.appendNode("artifactId", "emotesAPI")
-                apiNode.appendNode("version", project.version)
+                apiNode.appendNode("version", project.version_base)
                 apiNode.appendNode("scope", "compile")
 
                 def executorNode = depsNode.appendNode("dependency")
                 executorNode.appendNode("groupId", project.group)
                 executorNode.appendNode("artifactId", "emotesExecutor")
-                executorNode.appendNode("version", project.version)
+                executorNode.appendNode("version", project.version_base)
                 executorNode.appendNode("scope", "compile")
 
                 def serverNode = depsNode.appendNode("dependency")
                 serverNode.appendNode("groupId", project.group)
                 serverNode.appendNode("artifactId", "emotesServer")
-                serverNode.appendNode("version", project.version)
+                serverNode.appendNode("version", project.version_base)
                 serverNode.appendNode("scope", "compile")
             }
 
