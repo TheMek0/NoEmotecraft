@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -41,18 +42,16 @@ import java.util.function.Function;
  * just to reimplement it in different environments (Forge/Fabric/1.16/1.12 etc...)
  */
 public class ConfigScreen extends OptionsSubScreen {
-    private OptionsList options;
-
+    private final Minecraft minecraft;
 
     public ConfigScreen(Screen parent) {
         super(parent, Minecraft.getInstance().options, Component.translatable("emotecraft.otherconfig"));
+        this.minecraft = Minecraft.getInstance();
     }
 
     @Override
-    protected void init() {
-        super.init();
-        options = new OptionsList(this.minecraft, this.width, this);
-        //I just copy these values from VideoOptionsScreen...
+    protected void addOptions() {
+        var options = Objects.requireNonNull(this.list); // always non-null when this method is called
         options.addBig(DummyEntry.of("emotecraft.otherconfig.category.general"));
 
         EmoteInstance.config.iterateGeneral(entry -> addConfigEntry(entry, options));
@@ -61,16 +60,6 @@ public class ConfigScreen extends OptionsSubScreen {
 
         EmoteInstance.config.iterateExpert(entry -> addConfigEntry(entry, options));
         this.addWidget(options);
-    }
-
-    @Override
-    protected void addTitle() {
-
-    }
-
-    @Override
-    protected void addOptions() {
-
     }
 
     @Override
@@ -143,14 +132,6 @@ public class ConfigScreen extends OptionsSubScreen {
         }
         this.minecraft.setScreen(new ConfigScreen(this.lastScreen));
     }
-
-    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-        super.render(graphics, mouseX, mouseY, delta);
-        this.options.render(graphics, mouseX, mouseY, delta);
-        graphics.drawCenteredString(this.font, this.title, this.width / 2, 5, 16777215);
-    }
-
-
 
     protected static List<FormattedCharSequence> splitTooltip(Component component) {
         return Minecraft.getInstance().font.split(component, 200);
