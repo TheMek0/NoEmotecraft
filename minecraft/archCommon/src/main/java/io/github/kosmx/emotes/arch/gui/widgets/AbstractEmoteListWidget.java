@@ -30,10 +30,9 @@ public abstract class AbstractEmoteListWidget<E extends AbstractEmoteListWidget.
         this.screen = screen;
     }
 
-
     @Override
     public int getRowWidth(){
-        return this.width - 5;
+        return this.width - 10;
     }
 
     protected abstract E newEmoteEntry(Minecraft client, EmoteHolder emoteHolder);
@@ -74,8 +73,8 @@ public abstract class AbstractEmoteListWidget<E extends AbstractEmoteListWidget.
     }
 
     @Override
-    protected int getScrollbarPosition(){
-        return this.getX() - 6;
+    protected int getScrollbarPosition() {
+        return this.getX() + this.width - 6;
     }
 
     @Override
@@ -92,7 +91,6 @@ public abstract class AbstractEmoteListWidget<E extends AbstractEmoteListWidget.
             this.emote = emote;
         }
 
-
         @Override
         public void render(@NotNull GuiGraphics matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta){
             this.renderThis(matrices, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta);
@@ -102,7 +100,6 @@ public abstract class AbstractEmoteListWidget<E extends AbstractEmoteListWidget.
         public EmoteHolder getEmote() {
             return this.emote;
         }
-
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button){
