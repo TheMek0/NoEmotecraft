@@ -55,7 +55,7 @@ public class EmoteDataPacket extends AbstractNetworkPacket {
      */
     @Override
     public byte getVer() {
-        return 2;
+        return (byte) AnimationBinary.getCurrentVersion();
     }
 
     protected int calculateVersion(NetData config) {
