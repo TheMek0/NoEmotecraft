@@ -1,88 +1,81 @@
 plugins {
-    id 'java'
-    //id "com.github.johnrengelman.shadow" version "6.1.0"
-    id 'maven-publish'
+    id "java"
+    id "maven-publish"
 }
 
-project.archivesBaseName = project.archives_base_name
-project.version = project.version_base
+project.archivesBaseName = "${project.archives_base_name}-bukkit-${project.version_base}+mc${project.minecraft_version}"
 
 repositories {
     mavenCentral()
 
     maven {
-        name = "BucketMaven"
         url "https://hub.spigotmc.org/nexus/content/repositories/snapshots"
     }
     maven {
-        name = "dmulloy2"
         url "https://repo.dmulloy2.net/repository/public/"
     }
 }
 
 configurations {
-
     compileModule
 
     compileClasspath.extendsFrom compileModule
     runtimeClasspath.extendsFrom compileModule
-
 }
 
 dependencies {
-    //testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    //testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-
     implementation("org.spigotmc:spigot-api:${project.spigot_api}")
-    implementation group: "com.comphenix.protocol", name: "ProtocolLib", version: "5.0.0"
+    implementation("com.comphenix.protocol:ProtocolLib:5.3.0")
 
-    compileModule(project(':emotesAPI')){ transitive = false }
-    compileModule(project(':executor')){ transitive = false }
-    compileModule(project(':emotesServer')){ transitive = false }
+    compileModule(project(":emotesAPI")) {
+        transitive = false
+    }
+    compileModule(project(":executor")) {
+        transitive = false
+    }
+    compileModule(project(":emotesServer")) {
+        transitive = false
+    }
 
-    // Only for built-in resources, code is not used from here.
-    compileModule(project(':emotesAssets')){ transitive = false }
+    compileModule(project(":emotesAssets")) {
+        transitive = false
+    }
 
-    compileModule("dev.kosmx.player-anim:anim-core:${project.player_anim_core}"){ transitive = false }
+    compileModule("dev.kosmx.player-anim:anim-core:${project.player_anim_core}") {
+        transitive = false
+    }
 }
 
-processResources{
-
+processResources {
     inputs.property "version", project.version_base
     inputs.property "description", rootProject.mod_description
 
-    filesMatching("plugin.yml"){
+    filesMatching("plugin.yml") {
         expand version: project.version_base, description: rootProject.mod_description
     }
-
 }
-
-//shadowJar{
-//    configurations = [project.configurations.compileModule]
-//   archiveClassifier.set("bukkit")
-//}
 
 compileJava {
-    dependsOn(':emotesAssets:publicationJar')
+    dependsOn(":emotesAssets:publicationJar")
 }
 
-jar{
-    from{
-        configurations.compileModule.collect() {it.isDirectory() ? it : zipTree(it)}
-    }
-    archiveClassifier.set("bukkit")
-}
-
-tasks.register('copyArtifacts') {
-    dependsOn('build')
-    doLast {
-        copy {
-            from "${project.buildDir}/libs/${project.archivesBaseName}-${project.version}-bukkit.jar"
-            into "${rootProject.projectDir}/artifacts"
+jar {
+    from {
+        configurations.compileModule.collect() {
+            it.isDirectory() ? it : zipTree(it)
         }
     }
 }
 
+tasks.register("copyArtifacts") {
+    dependsOn("build")
+    doLast {
+        copy {
+            from "${project.projectDir}/build/libs/${project.archives_base_name}-bukkit-${project.version_base}+mc${project.minecraft_version}.jar"
+            into "${rootProject.projectDir}/artifacts"
+        }
+    }
+}
 
 java {
     withSourcesJar()
@@ -91,20 +84,15 @@ java {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            // add all the jars that should be included when publishing to maven
-
             artifactId = 'emotesBukkit'
 
-            artifact(jar) {
-                classifier ''
-            }
+            artifact(jar)
             artifact(sourcesJar)
 
-
-            pom{
+            pom {
                 name = "emotesBukkit"
-                description = "Minecraft Emotecraft Bukkit plugin"
-                url = 'https://github.com/KosmX/emotes'
+                description = "Minecraft NoEmotecraft Bukkit plugin"
+                url = 'https://github.com/TheMek0/NoEmotecraft'
                 developers {
                     developer {
                         id = 'kosmx'
@@ -113,23 +101,15 @@ publishing {
                     }
                 }
 
-                licenses{
-                    license{
-                        name = "CC-BY-4.0 License"
-                        url = "https://creativecommons.org/licenses/by/4.0/legalcode"
-                    }
-                }
-
                 scm {
-                    connection = 'scm:git:github.com/kosmx/emotes.git'
-                    developerConnection = 'scm:git:github.com/kosmx/emotes.git'
-                    url = 'https://github.com/KosmX/emotes'
+                    connection = "scm:git:github.com/themek0/NoEmotecraft.git"
+                    developerConnection = "scm:git:github.com/themek0/NoEmotecraft.git"
+                    url = "https://github.com/TheMek0/NoEmotecraft"
                 }
             }
         }
     }
 
-    // select the repositories you want to publish to
     repositories {
         mavenLocal()
     }

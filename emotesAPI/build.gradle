@@ -1,13 +1,8 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'signing' //why not if I can?
+    id 'signing'
 }
-
-
-
-//sourceCompatibility = JavaVersion.VERSION_1_8
-//targetCompatibility = JavaVersion.VERSION_1_8
 
 
 configurations {
@@ -25,14 +20,12 @@ test {
 }
 
 compileJava {
-    options.release.set 8 //Build on JDK 1.8
+    options.release.set 21
 }
 
 artifacts {
     dev(jar)
 }
-
-//-------- publishing --------
 
 java{
     withSourcesJar()
@@ -62,8 +55,6 @@ signing {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            // add all the jars that should be included when publishing to maven
-
             artifactId = 'emotesAPI'
 
             artifact(jar)
@@ -94,13 +85,6 @@ publishing {
                     }
                 }
 
-                licenses{
-                    license{
-                        name = "CC-BY-4.0 License"
-                        url = "https://creativecommons.org/licenses/by/4.0/legalcode"
-                    }
-                }
-
                 scm {
                     connection = 'scm:git:github.com/kosmx/emotes.git'
                     developerConnection = 'scm:git:github.com/kosmx/emotes.git'
@@ -110,7 +94,6 @@ publishing {
         }
     }
 
-    // select the repositories you want to publish to
     repositories {
         mavenLocal()
     }

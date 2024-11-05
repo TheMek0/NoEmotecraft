@@ -2,16 +2,13 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         maven {
-            name = 'Fabric'
-            url = 'https://maven.fabricmc.net/'
+            url = "https://maven.fabricmc.net/"
         }
         maven {
-            name = 'Architectury maven'
-            url = 'https://maven.architectury.dev/'
+            url = "https://maven.architectury.dev/"
         }
         maven {
-            name = 'hell'
-            url = 'https://maven.minecraftforge.net/'
+            url = "https://maven.minecraftforge.net/"
             content{
                 excludeGroupByRegex "org\\.eclipse\\.?.*"
             }
@@ -19,29 +16,16 @@ pluginManagement {
     }
 }
 
-rootProject.name = "emotecraft"
+rootProject.name = "NoEmotecraft"
 
-include 'emotesAPI'
+include "emotesAPI"
 
+include "executor"
+include "emotesServer"
+include "emotesAssets"
 
-//include 'oldJunk'
-include 'executor'
-include 'emotesServer'
-include 'emotesAssets'
+include "minecraft"
+include "minecraft:archCommon"
+include "minecraft:fabric"
 
-//Minecraft 1.20 version
-include 'minecraft'
-include 'minecraft:archCommon'
-include 'minecraft:fabric'
-
-//Bukkit plugin stuff
-include 'bukkit'
-include 'bukkit:debug'
-
-//Bungee plugin stuff
-include 'bungee'
-
-//Velocity plugin stuff
-include 'velocity'
-
-//*/
+include "bukkit"

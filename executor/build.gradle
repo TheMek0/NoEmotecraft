@@ -1,26 +1,12 @@
 plugins {
-    id 'java'
-    id 'maven-publish'
-}
-
-
-
-repositories {
-    mavenCentral()
-}
-
-configurations {
-    dev
+    id "java"
+    id "maven-publish"
 }
 
 dependencies {
-    implementation project(':emotesAPI')
+    implementation project(":emotesAPI")
     implementation "dev.kosmx.player-anim:anim-core:${project.player_anim_core}"
     compileOnly "com.google.code.gson:gson:2.11.+"
-}
-
-artifacts {
-    dev(jar)
 }
 
 java {
@@ -31,8 +17,6 @@ java {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            // add all the jars that should be included when publishing to maven
-
             artifactId = 'emotesExecutor'
 
             artifact(jar)
@@ -56,10 +40,10 @@ publishing {
                 apiNode.appendNode("scope", "compile")
             }
 
-            pom{
+            pom {
                 name = "executor"
-                description = "Minecraft Emotecraft executor interface"
-                url = 'https://github.com/KosmX/emotes'
+                description = "Minecraft NoEmotecraft executor interface"
+                url = 'https://github.com/TheMek0/NoEmotecraft'
                 developers {
                     developer {
                         id = 'kosmx'
@@ -68,24 +52,17 @@ publishing {
                     }
                 }
 
-                licenses{
-                    license{
-                        name = "CC-BY-4.0 License"
-                        url = "https://creativecommons.org/licenses/by/4.0/legalcode"
-                    }
-                }
-
                 scm {
-                    connection = 'scm:git:github.com/kosmx/emotes.git'
-                    developerConnection = 'scm:git:github.com/kosmx/emotes.git'
-                    url = 'https://github.com/KosmX/emotes'
+                    connection = "scm:git:github.com/themek0/NoEmotecraft.git"
+                    developerConnection = "scm:git:github.com/themek0/NoEmotecraft.git"
+                    url = "https://github.com/TheMek0/NoEmotecraft"
                 }
             }
         }
     }
 
-    // select the repositories you want to publish to
     repositories {
         mavenLocal()
+        mavenCentral()
     }
 }

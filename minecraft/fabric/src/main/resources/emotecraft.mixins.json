@@ -2,12 +2,10 @@
   "required": true,
   "minVersion": "0.8",
   "package": "io.github.kosmx.emotes.fabric.mixin",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ServerPlayNetworkInstance"
   ],
-  "client": [],
-  "server": [],
   "injectors": {
     "defaultRequire": 1
   }

@@ -1,15 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    //id 'forgified-fabric-loom' version '0.6-SNAPSHOT' //Forge loom :D
-    //id "architectury-plugin" version "3.0-SNAPSHOT"
 }
-
-//apply plugin: 'dev.architectury.loom'
-//apply plugin: "architectury-plugin"
-//apply plugin: 'com.github.johnrengelman.shadow'
-
-
 
 configurations {
     dev
@@ -20,22 +12,8 @@ tasks.withType(Copy){
         rename{
             String filename->filename = filename.toLowerCase()
         }
-        //Rename every file to lowercase. This is essential for the translations to work
-        //Possibly creates other problems on other operating systems
     }
 }
-/*
-shadowJar{
-    configurations = [project.configurations.compileModule]
-   archiveClassifier.set("")
-}
-
-
- */
-//remapJar{
-//    dependsOn shadowJar
-//    input.set shadowJar.archiveFile
-//}
 
 task publicationJar (type: Jar, dependsOn: classes ) {
     archiveClassifier.set("")
@@ -60,8 +38,6 @@ java {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            // add all the jars that should be included when publishing to maven
-
             artifactId = 'emotesMain'
 
             artifact(publicationJar)
@@ -111,13 +87,6 @@ publishing {
                     }
                 }
 
-                licenses{
-                    license{
-                        name = "CC-BY-4.0 License"
-                        url = "https://creativecommons.org/licenses/by/4.0/legalcode"
-                    }
-                }
-
                 scm {
                     connection = 'scm:git:github.com/kosmx/emotes.git'
                     developerConnection = 'scm:git:github.com/kosmx/emotes.git'
@@ -127,7 +96,6 @@ publishing {
         }
     }
 
-    // select the repositories you want to publish to
     repositories {
         mavenLocal()
     }

@@ -1,9 +1,9 @@
-name: emotecraft
+name: NoEmotecraft
 description: ${description}
 main: io.github.kosmx.emotes.bukkit.BukkitWrapper
 version: ${version}
-api-version: 1.16
-website: https://github.com/KosmX/emotes
-authors: [KomsX]
+api-version: 1.21
+website: https://github.com/TheMek0/NoEmotecraft
+authors: [KomsX, TheMeko]
 depend: [ProtocolLib]
 folia-supported: true

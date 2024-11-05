@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "io.github.kosmx.emotes.arch.mixin",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_21",
   "plugin": "io.github.kosmx.emotes.mixin.EmotesMixinPlugin",
   "mixins": [
     "ServerPlayerMixin",
@@ -12,7 +12,6 @@
     "EmotePlayerMixin",
     "KeyEventMixin"
   ],
-  "server": [],
   "injectors": {
     "defaultRequire": 1
   }
